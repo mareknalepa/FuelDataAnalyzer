@@ -1,4 +1,4 @@
-package pl.polsl.tpdia.fueldata.events;
+package pl.polsl.tpdia.fueldata.services;
 
 public class Timeline {
 	

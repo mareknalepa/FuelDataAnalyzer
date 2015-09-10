@@ -1,12 +1,6 @@
 package pl.polsl.tpdia.fueldata.events;
 
-public class CarRefuelingEvent implements Event {
-
-	@Override
-	public long getScheduledTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+public class CarRefuelingEvent extends AbstractEvent {
 
 	@Override
 	public void dispatch() {
