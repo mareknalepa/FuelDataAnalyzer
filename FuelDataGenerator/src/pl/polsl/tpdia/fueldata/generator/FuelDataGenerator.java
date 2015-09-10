@@ -4,18 +4,26 @@ import java.util.Date;
 
 import pl.polsl.tpdia.fueldata.events.Event;
 import pl.polsl.tpdia.fueldata.events.EventQueue;
-import pl.polsl.tpdia.fueldata.events.Timeline;
 import pl.polsl.tpdia.fueldata.model.FuelStation;
-import pl.polsl.tpdia.fueldata.model.ModelManager;
+import pl.polsl.tpdia.fueldata.services.ModelManager;
+import pl.polsl.tpdia.fueldata.services.ServiceContainer;
+import pl.polsl.tpdia.fueldata.services.Timeline;
 
 public class FuelDataGenerator {
 
 	public static void main(String[] args) {
 		log("Starting FuelDataGenerator...");
 		
-		Timeline timeline = new Timeline();
-		EventQueue eventQueue = new EventQueue();
-		ModelManager modelManager = ModelManager.getInstance();
+		ServiceContainer sc = ServiceContainer.getInstance();
+		
+		log("Initializing services...");
+		sc.register("timeline", new Timeline());
+		sc.register("eventqueue", new EventQueue());
+		sc.register("modelmanager", new ModelManager());
+		
+		Timeline timeline = (Timeline) sc.get("timeline");
+		EventQueue eventQueue = (EventQueue) sc.get("eventqueue");
+		ModelManager modelManager = (ModelManager) sc.get("modelmanager");
 		
 		log("Loading model configuration...");
 		modelManager.loadModelConfiguration();

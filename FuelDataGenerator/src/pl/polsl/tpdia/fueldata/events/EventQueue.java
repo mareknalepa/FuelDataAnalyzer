@@ -18,6 +18,7 @@ public class EventQueue {
 	public Event dequeue(long time) {
 		for (Event e : events) {
 			if (e.getScheduledTime() == time) {
+				events.remove(e);
 				return e;
 			}
 		}
