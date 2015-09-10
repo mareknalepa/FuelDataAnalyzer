@@ -1,5 +1,7 @@
 package pl.polsl.tpdia.fueldata.model;
 
+import pl.polsl.tpdia.fueldata.events.EventQueue;
+
 public class ModelManager {
 	
 	private ModelManager() {}
@@ -19,6 +21,10 @@ public class ModelManager {
 	}
 	
 	public void loadModelConfiguration() {
+		fuelStation = new FuelStation();
+	}
+	
+	public void enqueueInitialEvents(EventQueue eq) {
 		
 	}
 }
