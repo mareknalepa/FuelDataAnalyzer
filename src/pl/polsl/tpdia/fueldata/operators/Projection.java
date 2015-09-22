@@ -8,6 +8,8 @@ import java.util.Map;
 
 import pl.polsl.tpdia.fueldata.model.DataHolder;
 import pl.polsl.tpdia.fueldata.model.NozzleMeasure;
+import pl.polsl.tpdia.fueldata.model.Refuel;
+import pl.polsl.tpdia.fueldata.model.TankMeasure;
 
 public class Projection {
 	public static DataHolder apply(DataHolder data, List<String> nozzles, List<String> tanks, List<String> refuels) {
@@ -22,7 +24,7 @@ public class Projection {
 	private static DataHolder purgeNozzles(DataHolder data, List<String> nozzles) {
 		for(NozzleMeasure m : data.getNozzleMeasures()) {
 			try {
-				Method[] setters = NozzleMeasure.class.getMethods();
+				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
 				Map<String, Method> settersToInvokeWithNull = new HashMap<>();
 				for(Method setter : setters) {
 					settersToInvokeWithNull.put(setter.getName(), setter);
@@ -48,9 +50,9 @@ public class Projection {
 	}
 	
 	private static DataHolder purgeTanks(DataHolder data, List<String> tanks) {
-		for(NozzleMeasure m : data.getNozzleMeasures()) {
+		for(TankMeasure m : data.getTankMeasures()) {
 			try {
-				Method[] setters = NozzleMeasure.class.getMethods();
+				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
 				Map<String, Method> settersToInvokeWithNull = new HashMap<>();
 				for(Method setter : setters) {
 					settersToInvokeWithNull.put(setter.getName(), setter);
@@ -76,9 +78,9 @@ public class Projection {
 	}
 	
 	private static DataHolder purgeRefuels(DataHolder data, List<String> refuels) {
-		for(NozzleMeasure m : data.getNozzleMeasures()) {
+		for(Refuel m : data.getRefuels()) {
 			try {
-				Method[] setters = NozzleMeasure.class.getMethods();
+				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
 				Map<String, Method> settersToInvokeWithNull = new HashMap<>();
 				for(Method setter : setters) {
 					settersToInvokeWithNull.put(setter.getName(), setter);
