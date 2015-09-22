@@ -8,6 +8,14 @@ import pl.polsl.tpdia.fueldata.model.DataHolder;
 public class Analyzer {
 
 	public static void main(String[] args) {
+		DataHolder dh = loadData();
+
+		// TODO: apply operators
+
+		// TODO: save generated data
+	}
+
+	private static DataHolder loadData() {
 		DataHolder dh = new DataHolder();
 
 		String nozzleMeasuresPath;
@@ -33,9 +41,6 @@ public class Analyzer {
 		}
 
 		CsvLoader.load(dh, nozzleMeasuresPath, refuelsPath, tankMeasuresPath);
-
-		// TODO: apply operators
-
-		// TODO: save generated data
+		return dh;
 	}
 }
