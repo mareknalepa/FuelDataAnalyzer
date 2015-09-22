@@ -11,6 +11,7 @@ public class NozzleMeasure {
 	private Double currentCounter;
 	private Double totalCounter;
 	private Boolean nozzleIdle;
+	
 	public Date getTimestamp() {
 		return timestamp;
 	}
