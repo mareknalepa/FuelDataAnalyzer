@@ -22,12 +22,16 @@ public class Selection {
 	}
 
 	private static DataHolder setNozzles(DataHolder data, Map<String, Object> nozzles) {
-		for (NozzleMeasure m : data.getNozzleMeasures()) {
+		for(int i = 0; i < data.getNozzleMeasures().size(); i++) {
+			NozzleMeasure m = data.getNozzleMeasures().get(i);
 			try {
 				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
 				Map<String, Method> gettersToCompareWithValue = new HashMap<>();
 				Map<Method, Object> getterValues = new HashMap<>();
 				for (Method setter : setters) {
+					if (!setter.getName().startsWith("get")) {
+						continue;
+					}
 					String name = setter.getName();
 					for (String n : nozzles.keySet().toArray(new String[0])) {
 						if (name.endsWith(n)) {
@@ -55,12 +59,16 @@ public class Selection {
 	}
 
 	private static DataHolder setTanks(DataHolder data, Map<String, Object> nozzles) {
-		for (TankMeasure m : data.getTankMeasures()) {
+		for(int i = 0; i < data.getTankMeasures().size(); i++) {
+			TankMeasure m = data.getTankMeasures().get(i);
 			try {
 				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
 				Map<String, Method> gettersToCompareWithValue = new HashMap<>();
 				Map<Method, Object> getterValues = new HashMap<>();
 				for (Method setter : setters) {
+					if (!setter.getName().startsWith("get")) {
+						continue;
+					}
 					String name = setter.getName();
 					for (String n : nozzles.keySet().toArray(new String[0])) {
 						if (name.endsWith(n)) {
@@ -88,12 +96,16 @@ public class Selection {
 	}
 
 	private static DataHolder setRefuels(DataHolder data, Map<String, Object> nozzles) {
-		for (Refuel m : data.getRefuels()) {
+		for(int i = 0; i < data.getRefuels().size(); i++) {
+			Refuel m = data.getRefuels().get(i);
 			try {
 				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
 				Map<String, Method> gettersToCompareWithValue = new HashMap<>();
 				Map<Method, Object> getterValues = new HashMap<>();
 				for (Method setter : setters) {
+					if (!setter.getName().startsWith("get")) {
+						continue;
+					}
 					String name = setter.getName();
 					for (String n : nozzles.keySet().toArray(new String[0])) {
 						if (name.endsWith(n)) {

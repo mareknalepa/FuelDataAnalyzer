@@ -22,11 +22,15 @@ public class Projection {
 	}
 	
 	private static DataHolder purgeNozzles(DataHolder data, List<String> nozzles) {
-		for(NozzleMeasure m : data.getNozzleMeasures()) {
+		for(int i = 0; i < data.getNozzleMeasures().size(); i++) {
+			NozzleMeasure m = data.getNozzleMeasures().get(i);
 			try {
 				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
 				Map<String, Method> settersToInvokeWithNull = new HashMap<>();
 				for(Method setter : setters) {
+					if (!setter.getName().startsWith("set")) {
+						continue;
+					}
 					settersToInvokeWithNull.put(setter.getName(), setter);
 					String name = setter.getName();
 					for(String n : nozzles) {
@@ -50,11 +54,15 @@ public class Projection {
 	}
 	
 	private static DataHolder purgeTanks(DataHolder data, List<String> tanks) {
-		for(TankMeasure m : data.getTankMeasures()) {
+		for(int i = 0; i < data.getTankMeasures().size(); i++) {
+			TankMeasure m = data.getTankMeasures().get(i);
 			try {
 				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
 				Map<String, Method> settersToInvokeWithNull = new HashMap<>();
 				for(Method setter : setters) {
+					if (!setter.getName().startsWith("set")) {
+						continue;
+					}
 					settersToInvokeWithNull.put(setter.getName(), setter);
 					String name = setter.getName();
 					for(String n : tanks) {
@@ -78,11 +86,15 @@ public class Projection {
 	}
 	
 	private static DataHolder purgeRefuels(DataHolder data, List<String> refuels) {
-		for(Refuel m : data.getRefuels()) {
+		for(int i = 0; i < data.getRefuels().size(); i++) {
+			Refuel m = data.getRefuels().get(i);
 			try {
 				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
 				Map<String, Method> settersToInvokeWithNull = new HashMap<>();
 				for(Method setter : setters) {
+					if (!setter.getName().startsWith("set")) {
+						continue;
+					}
 					settersToInvokeWithNull.put(setter.getName(), setter);
 					String name = setter.getName();
 					for(String n : refuels) {
