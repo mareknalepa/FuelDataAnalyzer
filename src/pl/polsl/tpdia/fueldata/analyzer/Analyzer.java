@@ -40,15 +40,15 @@ public class Analyzer {
 				Arrays.asList(tankFields), Arrays.asList(refuelFields));
 
 		out.println("Saving results...");
-		CsvGenerator.generate("nozzleResults.log", "tankResults.log",
-				"refuelResults.log", dh);
+		CsvGenerator.generate("nozzleResults.csv", "tankResults.csv",
+				"refuelResults.csv", dh);
 
 		out.println("Generating aggregates...");
 		List<AggregateHolder> ah = Aggregate.applyAvg(TankMeasure.class,
 				dh.getTankMeasures(), 30L, "getFuelVolume");
 
 		out.println("Saving aggregates...");
-		CsvGenerator.generateFromAggregate("avgFuelVolume.log", ah);
+		CsvGenerator.generateFromAggregate("avgFuelVolume.csv", ah);
 
 		out.println("Finished");
 	}
