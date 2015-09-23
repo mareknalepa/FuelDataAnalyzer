@@ -22,8 +22,8 @@ public class Analyzer {
 		DataHolder dh = loadData();
 
 		String[] fields = { "timestamp", "id", "fuelVolume" };
-		dh = Projection.apply(dh, Arrays.asList(fields),
-				new ArrayList<String>(), new ArrayList<String>());
+		dh = Projection.apply(dh, new ArrayList<String>(),
+				Arrays.asList(fields), new ArrayList<String>());
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("id", new Long(1));
