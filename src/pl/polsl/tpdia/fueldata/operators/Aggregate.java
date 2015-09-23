@@ -21,9 +21,6 @@ public class Aggregate {
 		Date start = list.get(0).getTimestamp();
 		Date end = new Date(start.getTime() + (minutes * ONE_MINUTE_IN_MILLIS));
 		while (lastIndex < list.size()) {
-			System.out.println(start);
-			System.out.println(end);
-			System.out.println("---");
 			AggregateHolder ah = new AggregateHolder();
 			ah.setStart(start);
 			ah.setEnd(end);
