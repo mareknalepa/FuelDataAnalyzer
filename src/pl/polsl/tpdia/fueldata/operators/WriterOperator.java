@@ -7,20 +7,22 @@ import java.lang.reflect.Method;
 import java.util.Date;
 
 import pl.polsl.tpdia.fueldata.model.Entity;
-import pl.polsl.tpdia.fueldata.model.NozzleMeasure;
 
 public class WriterOperator implements Operator {
-	
+
 	private FileWriter writer;
-	
+
 	public WriterOperator(FileWriter writer) {
 		this.writer = writer;
 	}
 
 	@Override
 	public Entity go(Entity data) {
+		if (data == null) {
+			return null;
+		}
 		try {
-			Method[] getters = NozzleMeasure.class.getDeclaredMethods();
+			Method[] getters = data.getClass().getDeclaredMethods();
 			for (Method getter : getters) {
 				if (!getter.getName().startsWith("get")) {
 					continue;
@@ -42,11 +44,10 @@ public class WriterOperator implements Operator {
 				}
 			}
 			writer.append("\n");
-			
-		} catch(IOException e) {
+			writer.flush();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return data;
 	}
-
 }

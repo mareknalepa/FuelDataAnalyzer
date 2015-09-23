@@ -4,5 +4,5 @@ import pl.polsl.tpdia.fueldata.model.Entity;
 
 public interface Operator {
 
-	public Entity go(Entity data);
+	public Entity go(Entity entity);
 }

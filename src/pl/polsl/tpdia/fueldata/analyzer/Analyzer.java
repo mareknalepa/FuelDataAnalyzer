@@ -2,23 +2,27 @@ package pl.polsl.tpdia.fueldata.analyzer;
 
 import static java.lang.System.out;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import pl.polsl.tpdia.fueldata.datasource.ListStreamDataSource;
 import pl.polsl.tpdia.fueldata.datasource.StreamDataSource;
-import pl.polsl.tpdia.fueldata.io.CsvGenerator;
 import pl.polsl.tpdia.fueldata.io.CsvLoader;
-import pl.polsl.tpdia.fueldata.model.AggregateHolder;
 import pl.polsl.tpdia.fueldata.model.DataHolder;
+import pl.polsl.tpdia.fueldata.model.Entity;
+import pl.polsl.tpdia.fueldata.model.NozzleMeasure;
+import pl.polsl.tpdia.fueldata.model.Refuel;
 import pl.polsl.tpdia.fueldata.model.TankMeasure;
-import pl.polsl.tpdia.fueldata.operators.Aggregate;
-import pl.polsl.tpdia.fueldata.operators.Projection;
+import pl.polsl.tpdia.fueldata.operators.AbstractAggregate;
+import pl.polsl.tpdia.fueldata.operators.AvgAggregate;
+import pl.polsl.tpdia.fueldata.operators.Operator;
 import pl.polsl.tpdia.fueldata.operators.Selection;
+import pl.polsl.tpdia.fueldata.operators.WriterOperator;
 
 public class Analyzer {
 
@@ -31,29 +35,60 @@ public class Analyzer {
 		out.println("Creating stream data source...");
 		StreamDataSource sds = new ListStreamDataSource(dh);
 
-		out.println("Performing selection...");
+		out.println("Configuring stream operators...");
+		List<Operator> nozzleOperators = new ArrayList<>();
+		List<Operator> refuelOperators = new ArrayList<>();
+		List<Operator> tankOperators = new ArrayList<>();
+
 		Map<String, Object> tankMap = new HashMap<>();
 		tankMap.put("id", new Long(1));
-		Map<String, Object> refuelMap = new HashMap<>();
-		refuelMap.put("tankId", new Long(1));
-		dh = Selection.apply(dh, new HashMap<>(), tankMap, refuelMap);
+		Selection s = new Selection(tankMap);
+		tankOperators.add(s);
 
-		out.println("Performing projection...");
-		String[] tankFields = { "timestamp", "id", "fuelVolume" };
-		String[] refuelFields = { "timestamp", "tankId", "fuelVolume" };
-		dh = Projection.apply(dh, new ArrayList<String>(),
-				Arrays.asList(tankFields), Arrays.asList(refuelFields));
+		out.println("Configuring output writers...");
+		try {
+			WriterOperator nozzleWriter = new WriterOperator(new FileWriter(
+					"nozzleResults.csv"));
+			WriterOperator refuelWriter = new WriterOperator(new FileWriter(
+					"refuelResults.csv"));
+			WriterOperator tankWriter = new WriterOperator(new FileWriter(
+					"tankResults.csv"));
+			nozzleOperators.add(nozzleWriter);
+			refuelOperators.add(refuelWriter);
+			tankOperators.add(tankWriter);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		out.println("Saving results...");
-		CsvGenerator.generate("nozzleResults.csv", "tankResults.csv",
-				"refuelResults.csv", dh);
+		out.println("Configuring aggregate operators...");
+		AbstractAggregate avgAggregate = new AvgAggregate();
+		avgAggregate.setGetter("getFuelVolume");
+		avgAggregate.setTimeWindow(30);
+		tankOperators.add(avgAggregate);
+		try {
+			tankOperators.add(new WriterOperator(new FileWriter(
+					"avgFuelVolume.csv")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		out.println("Generating aggregates...");
-		List<AggregateHolder> ah = Aggregate.applyAvg(TankMeasure.class,
-				dh.getTankMeasures(), 30L, "getFuelVolume");
-
-		out.println("Saving aggregates...");
-		CsvGenerator.generateFromAggregate("avgFuelVolume.csv", ah);
+		out.println("Starting processing data stream...");
+		Entity entity;
+		while ((entity = sds.waitForNext()) != null) {
+			if (entity instanceof NozzleMeasure) {
+				for (Operator o : nozzleOperators) {
+					entity = o.go(entity);
+				}
+			} else if (entity instanceof Refuel) {
+				for (Operator o : refuelOperators) {
+					entity = o.go(entity);
+				}
+			} else if (entity instanceof TankMeasure) {
+				for (Operator o : tankOperators) {
+					entity = o.go(entity);
+				}
+			}
+		}
 
 		out.println("Finished");
 	}

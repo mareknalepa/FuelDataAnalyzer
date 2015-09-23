@@ -9,13 +9,13 @@ import java.util.Map;
 import pl.polsl.tpdia.fueldata.model.Entity;
 
 public class Projection implements Operator {
-	
+
 	private List<String> fields;
-	
+
 	public Projection(List<String> fields) {
 		this.fields = fields;
 	}
-	
+
 	public Entity go(Entity data) {
 		if (data == null) {
 			return null;
@@ -41,7 +41,8 @@ public class Projection implements Operator {
 				setter.invoke(data, new Object[] { null });
 			}
 
-		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		} catch (SecurityException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 		return data;

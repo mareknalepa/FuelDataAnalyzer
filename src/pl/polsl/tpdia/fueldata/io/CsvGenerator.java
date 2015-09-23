@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
 
-import pl.polsl.tpdia.fueldata.model.AggregateHolder;
+import pl.polsl.tpdia.fueldata.model.AggregateResult;
 import pl.polsl.tpdia.fueldata.model.DataHolder;
 import pl.polsl.tpdia.fueldata.model.NozzleMeasure;
 import pl.polsl.tpdia.fueldata.model.Refuel;
@@ -112,12 +112,12 @@ public class CsvGenerator {
 	}
 
 	public static final void generateFromAggregate(String file,
-			List<AggregateHolder> ah) {
+			List<AggregateResult> ah) {
 		try {
 			FileWriter fileWriter = new FileWriter(file);
 
-			for (AggregateHolder m : ah) {
-				Method[] getters = AggregateHolder.class.getDeclaredMethods();
+			for (AggregateResult m : ah) {
+				Method[] getters = AggregateResult.class.getDeclaredMethods();
 				for (Method getter : getters) {
 					if (!getter.getName().startsWith("get")) {
 						continue;

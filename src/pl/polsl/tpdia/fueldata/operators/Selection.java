@@ -7,10 +7,10 @@ import java.util.Map;
 
 import pl.polsl.tpdia.fueldata.model.Entity;
 
-public class Selection implements Operator{
-	
+public class Selection implements Operator {
+
 	private Map<String, Object> fieldValues;
-	
+
 	public Selection(Map<String, Object> fieldValues) {
 		this.fieldValues = fieldValues;
 	}
@@ -19,7 +19,6 @@ public class Selection implements Operator{
 		if (data == null) {
 			return null;
 		}
-
 		try {
 			Method[] methods = data.getClass().getDeclaredMethods();
 			Map<String, Method> gettersToCompareWithValues = new HashMap<>();
@@ -31,7 +30,8 @@ public class Selection implements Operator{
 				String name = method.getName();
 				for (String n : fieldValues.keySet().toArray(new String[0])) {
 					if (name.equalsIgnoreCase("get" + n)) {
-						gettersToCompareWithValues.put(method.getName(), method);
+						gettersToCompareWithValues
+								.put(method.getName(), method);
 						getterExpectedValues.put(method, fieldValues.get(n));
 					}
 				}
@@ -39,12 +39,14 @@ public class Selection implements Operator{
 
 			for (Method setter : gettersToCompareWithValues.values()) {
 				Object result = setter.invoke(data);
-				if ((result != null) && (result.equals(getterExpectedValues.get(setter)))) {
+				if ((result != null)
+						&& (result.equals(getterExpectedValues.get(setter)))) {
 					return null;
 				}
 			}
 
-		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		} catch (SecurityException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 
