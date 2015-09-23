@@ -8,7 +8,7 @@ import java.util.Map;
 
 import pl.polsl.tpdia.fueldata.model.Entity;
 
-public class Projection {
+public class Projection implements Operator {
 	
 	private List<String> fields;
 	

@@ -9,9 +9,14 @@ import java.util.List;
 import pl.polsl.tpdia.fueldata.model.AggregateHolder;
 import pl.polsl.tpdia.fueldata.model.Entity;
 
-public class Aggregate {
+public class Aggregate implements Operator {
 
 	final static long ONE_MINUTE_IN_MILLIS = 60000;
+	
+	public Entity go(Entity entity) {
+		//FIXME
+		return entity;
+	}
 
 	public static <T extends Entity> List<AggregateHolder> applyAvg(
 			Class<T> type, List<T> list, Long minutes, String getter) {

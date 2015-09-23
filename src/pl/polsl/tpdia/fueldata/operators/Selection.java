@@ -7,7 +7,7 @@ import java.util.Map;
 
 import pl.polsl.tpdia.fueldata.model.Entity;
 
-public class Selection {
+public class Selection implements Operator{
 	
 	private Map<String, Object> fieldValues;
 	
