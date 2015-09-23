@@ -70,6 +70,9 @@ public class Aggregate {
 				e1.printStackTrace();
 			}
 		}
-		return sum / counter;
+		if (counter != 0) {
+			return sum / counter;
+		}
+		return 0.0;
 	}
 }
