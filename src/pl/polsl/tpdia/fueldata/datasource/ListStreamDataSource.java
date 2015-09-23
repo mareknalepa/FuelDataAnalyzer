@@ -1,8 +1,7 @@
 package pl.polsl.tpdia.fueldata.datasource;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedList;
 
 import pl.polsl.tpdia.fueldata.model.DataHolder;
 import pl.polsl.tpdia.fueldata.model.Entity;
@@ -12,11 +11,10 @@ import pl.polsl.tpdia.fueldata.model.TankMeasure;
 
 public class ListStreamDataSource implements StreamDataSource {
 
-	private List<Entity> entities;
-	private int index;
+	private LinkedList<Entity> entities;
 
 	public ListStreamDataSource(DataHolder dh) {
-		entities = new ArrayList<>();
+		entities = new LinkedList<>();
 		for (NozzleMeasure nm : dh.getNozzleMeasures()) {
 			entities.add(nm);
 		}
@@ -27,18 +25,13 @@ public class ListStreamDataSource implements StreamDataSource {
 			entities.add(tm);
 		}
 		Collections.sort(entities);
-		index = 0;
 	}
 
 	@Override
 	public Entity waitForNext() {
-		Entity e;
-		if (index < entities.size()) {
-			e = entities.get(index);
-			++index;
-		} else {
-			e = null;
+		if (entities.size() == 0) {
+			return null;
 		}
-		return e;
+		return entities.removeFirst();
 	}
 }
