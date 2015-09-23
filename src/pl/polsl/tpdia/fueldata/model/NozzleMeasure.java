@@ -2,7 +2,7 @@ package pl.polsl.tpdia.fueldata.model;
 
 import java.util.Date;
 
-public class NozzleMeasure implements Comparable<NozzleMeasure> {
+public class NozzleMeasure extends Entity {
 
 	private Date timestamp;
 	private String locationId;
@@ -12,6 +12,7 @@ public class NozzleMeasure implements Comparable<NozzleMeasure> {
 	private Double totalCounter;
 	private Boolean nozzleIdle;
 
+	@Override
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -66,10 +67,5 @@ public class NozzleMeasure implements Comparable<NozzleMeasure> {
 
 	public void setNozzleIdle(Boolean nozzleIdle) {
 		this.nozzleIdle = nozzleIdle;
-	}
-
-	@Override
-	public int compareTo(NozzleMeasure nm) {
-		return getTimestamp().compareTo(nm.getTimestamp());
 	}
 }

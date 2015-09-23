@@ -2,13 +2,14 @@ package pl.polsl.tpdia.fueldata.model;
 
 import java.util.Date;
 
-public class Refuel implements Comparable<Refuel> {
+public class Refuel extends Entity {
 
 	Date timestamp;
 	private Long tankId;
 	private Double fuelVolume;
 	private Double refuelSpeed;
 
+	@Override
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -39,10 +40,5 @@ public class Refuel implements Comparable<Refuel> {
 
 	public void setRefuelSpeed(Double refuelSpeed) {
 		this.refuelSpeed = refuelSpeed;
-	}
-
-	@Override
-	public int compareTo(Refuel r) {
-		return getTimestamp().compareTo(r.getTimestamp());
 	}
 }

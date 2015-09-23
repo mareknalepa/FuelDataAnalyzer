@@ -2,111 +2,74 @@ package pl.polsl.tpdia.fueldata.operators;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
-import pl.polsl.tpdia.fueldata.model.DataHolder;
-import pl.polsl.tpdia.fueldata.model.NozzleMeasure;
-import pl.polsl.tpdia.fueldata.model.Refuel;
-import pl.polsl.tpdia.fueldata.model.TankMeasure;
+import pl.polsl.tpdia.fueldata.model.AggregateHolder;
+import pl.polsl.tpdia.fueldata.model.Entity;
 
 public class Aggregate {
 
-	public enum Entity {
-		NozzleMeasure, Refuel, TankMeasure
-	}
+	final static long ONE_MINUTE_IN_MILLIS = 60000;
 
-	public static Double applySum(DataHolder dh, Entity e, Date from, Date to,
-			String getter) {
-		sort(dh);
-		Double sum = 0.0;
-		switch (e) {
-		case NozzleMeasure:
-			for (NozzleMeasure nm : dh.getNozzleMeasures()) {
-				if (nm.getTimestamp().before(from)) {
-					continue;
-				}
-				if (nm.getTimestamp().after(to)) {
-					continue;
-				}
-				Class<?> c = NozzleMeasure.class;
-				Method method;
-				try {
-					method = c.getDeclaredMethod(getter);
-					sum += (Double) method.invoke(nm);
-				} catch (NoSuchMethodException e1) {
-					e1.printStackTrace();
-				} catch (SecurityException e1) {
-					e1.printStackTrace();
-				} catch (IllegalAccessException e1) {
-					e1.printStackTrace();
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				} catch (InvocationTargetException e1) {
-					e1.printStackTrace();
-				}
+	public static <T extends Entity> List<AggregateHolder> applyAvg(
+			Class<T> type, List<T> list, Long minutes, String getter) {
+		List<AggregateHolder> aggregateHolderList = new ArrayList<>();
+		Integer lastIndex = 0;
+		Collections.sort(list);
+		Date start = list.get(0).getTimestamp();
+		Date end = new Date(start.getTime() + (minutes * ONE_MINUTE_IN_MILLIS));
+		while (lastIndex < list.size()) {
+			AggregateHolder ah = new AggregateHolder();
+			ah.setStart(start);
+			ah.setEnd(end);
+			ah.setValue(aggregateList(type, list, start, end, getter, lastIndex));
+			aggregateHolderList.add(ah);
+
+			if ((lastIndex + 1) >= list.size()) {
+				break;
 			}
-			break;
-		case Refuel:
-			for (Refuel r : dh.getRefuels()) {
-				if (r.getTimestamp().before(from)) {
-					continue;
-				}
-				if (r.getTimestamp().after(to)) {
-					continue;
-				}
-				Class<?> c = Refuel.class;
-				Method method;
-				try {
-					method = c.getDeclaredMethod(getter);
-					sum += (Double) method.invoke(r);
-				} catch (NoSuchMethodException e1) {
-					e1.printStackTrace();
-				} catch (SecurityException e1) {
-					e1.printStackTrace();
-				} catch (IllegalAccessException e1) {
-					e1.printStackTrace();
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				} catch (InvocationTargetException e1) {
-					e1.printStackTrace();
-				}
-			}
-			break;
-		case TankMeasure:
-			for (TankMeasure tm : dh.getTankMeasures()) {
-				if (tm.getTimestamp().before(from)) {
-					continue;
-				}
-				if (tm.getTimestamp().after(to)) {
-					continue;
-				}
-				Class<?> c = NozzleMeasure.class;
-				Method method;
-				try {
-					method = c.getDeclaredMethod(getter);
-					sum += (Double) method.invoke(tm);
-				} catch (NoSuchMethodException e1) {
-					e1.printStackTrace();
-				} catch (SecurityException e1) {
-					e1.printStackTrace();
-				} catch (IllegalAccessException e1) {
-					e1.printStackTrace();
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				} catch (InvocationTargetException e1) {
-					e1.printStackTrace();
-				}
-			}
-			break;
+			Date newEnd = list.get(lastIndex + 1).getTimestamp();
+			long diff = newEnd.getTime() - end.getTime();
+			end = newEnd;
+			start = new Date(start.getTime() + diff);
 		}
-
-		return sum;
+		return aggregateHolderList;
 	}
 
-	private static void sort(DataHolder dh) {
-		Collections.sort(dh.getNozzleMeasures());
-		Collections.sort(dh.getRefuels());
-		Collections.sort(dh.getTankMeasures());
+	private static <T extends Entity> Double aggregateList(Class<T> type,
+			List<T> list, Date start, Date end, String getter, Integer lastIndex) {
+		Double sum = 0.0;
+		int counter = 0;
+		for (int i = 0; i < list.size(); ++i) {
+			T entity = list.get(i);
+			if (entity.getTimestamp().before(start)) {
+				continue;
+			}
+			if (entity.getTimestamp().after(end)) {
+				break;
+			} else {
+				lastIndex = i;
+			}
+			Method m;
+			try {
+				m = type.getDeclaredMethod(getter);
+				sum += (Double) m.invoke(entity);
+				++counter;
+			} catch (NoSuchMethodException e1) {
+				e1.printStackTrace();
+			} catch (SecurityException e1) {
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				e1.printStackTrace();
+			} catch (IllegalArgumentException e1) {
+				e1.printStackTrace();
+			} catch (InvocationTargetException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return sum / counter;
 	}
 }

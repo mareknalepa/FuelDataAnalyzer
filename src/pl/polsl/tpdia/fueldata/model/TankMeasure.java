@@ -2,7 +2,7 @@ package pl.polsl.tpdia.fueldata.model;
 
 import java.util.Date;
 
-public class TankMeasure implements Comparable<TankMeasure> {
+public class TankMeasure extends Entity {
 
 	private Date timestamp;
 	private String locationId;
@@ -14,6 +14,7 @@ public class TankMeasure implements Comparable<TankMeasure> {
 	private Double waterLevel;
 	private Double waterVolume;
 
+	@Override
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -84,10 +85,5 @@ public class TankMeasure implements Comparable<TankMeasure> {
 
 	public void setWaterVolume(Double waterVolume) {
 		this.waterVolume = waterVolume;
-	}
-
-	@Override
-	public int compareTo(TankMeasure tm) {
-		return getTimestamp().compareTo(tm.getTimestamp());
 	}
 }
