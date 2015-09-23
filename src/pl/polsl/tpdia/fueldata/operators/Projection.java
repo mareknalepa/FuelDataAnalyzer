@@ -6,116 +6,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pl.polsl.tpdia.fueldata.model.DataHolder;
-import pl.polsl.tpdia.fueldata.model.NozzleMeasure;
-import pl.polsl.tpdia.fueldata.model.Refuel;
-import pl.polsl.tpdia.fueldata.model.TankMeasure;
+import pl.polsl.tpdia.fueldata.model.Entity;
 
 public class Projection {
-	public static DataHolder apply(DataHolder data, List<String> nozzles, List<String> tanks, List<String> refuels) {
-
-		purgeNozzles(data, nozzles);
-		purgeTanks(data, tanks);
-		purgeRefuels(data, refuels);
-
-		return data;
+	
+	private List<String> fields;
+	
+	public Projection(List<String> fields) {
+		this.fields = fields;
 	}
-
-	private static DataHolder purgeNozzles(DataHolder data, List<String> nozzles) {
-		for (int i = 0; i < data.getNozzleMeasures().size(); i++) {
-			NozzleMeasure m = data.getNozzleMeasures().get(i);
-			try {
-				Method[] setters = NozzleMeasure.class.getDeclaredMethods();
-				Map<String, Method> settersToInvokeWithNull = new HashMap<>();
-				for (Method setter : setters) {
-					if (!setter.getName().startsWith("set")) {
-						continue;
-					}
-					settersToInvokeWithNull.put(setter.getName(), setter);
-					String name = setter.getName();
-					for (String n : nozzles) {
-						if (name.equalsIgnoreCase("set" + n)) {
-							settersToInvokeWithNull.remove(setter.getName());
-						}
-					}
-				}
-
-				for (Method setter : settersToInvokeWithNull.values()) {
-					// set unwanted field to null
-					setter.invoke(m, new Object[] { null });
-				}
-
-			} catch (SecurityException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException e) {
-				e.printStackTrace();
-				data.getNozzleMeasures().remove(m);
-			}
+	
+	public Entity go(Entity data) {
+		if (data == null) {
+			return null;
 		}
-		return data;
-	}
-
-	private static DataHolder purgeTanks(DataHolder data, List<String> tanks) {
-		for (int i = 0; i < data.getTankMeasures().size(); i++) {
-			TankMeasure m = data.getTankMeasures().get(i);
-			try {
-				Method[] setters = TankMeasure.class.getDeclaredMethods();
-				Map<String, Method> settersToInvokeWithNull = new HashMap<>();
-				for (Method setter : setters) {
-					if (!setter.getName().startsWith("set")) {
-						continue;
-					}
-					settersToInvokeWithNull.put(setter.getName(), setter);
-					String name = setter.getName();
-					for (String n : tanks) {
-						if (name.equalsIgnoreCase("set" + n)) {
-							settersToInvokeWithNull.remove(setter.getName());
-						}
+		try {
+			Method[] methods = data.getClass().getDeclaredMethods();
+			Map<String, Method> settersToInvokeWithNull = new HashMap<>();
+			for (Method method : methods) {
+				if (!method.getName().startsWith("set")) {
+					continue;
+				}
+				settersToInvokeWithNull.put(method.getName(), method);
+				String name = method.getName();
+				for (String fieldName : fields) {
+					if (name.equalsIgnoreCase("set" + fieldName)) {
+						settersToInvokeWithNull.remove(method.getName());
 					}
 				}
-
-				for (Method setter : settersToInvokeWithNull.values()) {
-					// set unwanted field to null
-					setter.invoke(m, new Object[] { null });
-				}
-
-			} catch (SecurityException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException e) {
-				e.printStackTrace();
-				data.getNozzleMeasures().remove(m);
 			}
-		}
-		return data;
-	}
 
-	private static DataHolder purgeRefuels(DataHolder data, List<String> refuels) {
-		for (int i = 0; i < data.getRefuels().size(); i++) {
-			Refuel m = data.getRefuels().get(i);
-			try {
-				Method[] setters = Refuel.class.getDeclaredMethods();
-				Map<String, Method> settersToInvokeWithNull = new HashMap<>();
-				for (Method setter : setters) {
-					if (!setter.getName().startsWith("set")) {
-						continue;
-					}
-					settersToInvokeWithNull.put(setter.getName(), setter);
-					String name = setter.getName();
-					for (String n : refuels) {
-						if (name.equalsIgnoreCase("set" + n)) {
-							settersToInvokeWithNull.remove(setter.getName());
-						}
-					}
-				}
-
-				for (Method setter : settersToInvokeWithNull.values()) {
-					// set unwanted field to null
-					setter.invoke(m, new Object[] { null });
-				}
-
-			} catch (SecurityException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException e) {
-				e.printStackTrace();
-				data.getNozzleMeasures().remove(m);
+			for (Method setter : settersToInvokeWithNull.values()) {
+				// set unwanted field to null
+				setter.invoke(data, new Object[] { null });
 			}
+
+		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
 		}
 		return data;
 	}
