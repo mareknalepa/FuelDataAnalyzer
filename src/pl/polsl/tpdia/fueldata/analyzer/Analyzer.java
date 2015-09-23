@@ -16,25 +16,38 @@ import pl.polsl.tpdia.fueldata.operators.Aggregate;
 import pl.polsl.tpdia.fueldata.operators.Projection;
 import pl.polsl.tpdia.fueldata.operators.Selection;
 
+import static java.lang.System.out;
+
 public class Analyzer {
 
 	public static void main(String[] args) {
+		out.println("Starting analyzer...");
+
+		out.println("Loading data...");
 		DataHolder dh = loadData();
 
-		String[] fields = { "timestamp", "id", "fuelVolume" };
-		dh = Projection.apply(dh, new ArrayList<String>(),
-				Arrays.asList(fields), new ArrayList<String>());
-
+		out.println("Performing selection...");
 		Map<String, Object> map = new HashMap<>();
 		map.put("id", new Long(1));
 		dh = Selection.apply(dh, map, new HashMap<>(), new HashMap<>());
 
+		out.println("Performing projection...");
+		String[] fields = { "timestamp", "id", "fuelVolume" };
+		dh = Projection.apply(dh, new ArrayList<String>(),
+				Arrays.asList(fields), new ArrayList<String>());
+
+		out.println("Saving results...");
+		CsvGenerator.generate("nozzleResults.log", "tankResults.log",
+				"refuelResults.log", dh);
+
+		out.println("Generating aggregates...");
 		List<AggregateHolder> ah = Aggregate.applyAvg(TankMeasure.class,
 				dh.getTankMeasures(), 15L, "getFuelVolume");
 
-		CsvGenerator.generate("nozzleResults.log", "tankResults.log",
-				"refuelResults.log", dh);
+		out.println("Saving aggregates...");
 		CsvGenerator.generateFromAggregate("avgFuelVolume.log", ah);
+
+		out.println("Finished");
 	}
 
 	private static DataHolder loadData() {
