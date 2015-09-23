@@ -29,7 +29,7 @@ public class Analyzer {
 		out.println("Performing selection...");
 		Map<String, Object> map = new HashMap<>();
 		map.put("id", new Long(1));
-		dh = Selection.apply(dh, map, new HashMap<>(), new HashMap<>());
+		dh = Selection.apply(dh, new HashMap<>(), map, new HashMap<>());
 
 		out.println("Performing projection...");
 		String[] fields = { "timestamp", "id", "fuelVolume" };
@@ -42,7 +42,7 @@ public class Analyzer {
 
 		out.println("Generating aggregates...");
 		List<AggregateHolder> ah = Aggregate.applyAvg(TankMeasure.class,
-				dh.getTankMeasures(), 15L, "getFuelVolume");
+				dh.getTankMeasures(), 30L, "getFuelVolume");
 
 		out.println("Saving aggregates...");
 		CsvGenerator.generateFromAggregate("avgFuelVolume.log", ah);

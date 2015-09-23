@@ -14,7 +14,8 @@ import pl.polsl.tpdia.fueldata.model.TankMeasure;
 
 public class CsvGenerator {
 
-	public static final void generate(String nozzle, String tank, String refeul, DataHolder data) {
+	public static final void generate(String nozzle, String tank,
+			String refeul, DataHolder data) {
 		try {
 			FileWriter nozzleFile = new FileWriter(nozzle);
 
@@ -27,7 +28,8 @@ public class CsvGenerator {
 					Object o = null;
 					try {
 						o = getter.invoke(m);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					} catch (IllegalAccessException | IllegalArgumentException
+							| InvocationTargetException e) {
 						e.printStackTrace();
 					}
 					if (o != null) {
@@ -51,7 +53,8 @@ public class CsvGenerator {
 					Object o = null;
 					try {
 						o = getter.invoke(m);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					} catch (IllegalAccessException | IllegalArgumentException
+							| InvocationTargetException e) {
 						e.printStackTrace();
 					}
 					if (o != null) {
@@ -75,7 +78,8 @@ public class CsvGenerator {
 					Object o = null;
 					try {
 						o = getter.invoke(m);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					} catch (IllegalAccessException | IllegalArgumentException
+							| InvocationTargetException e) {
 						e.printStackTrace();
 					}
 					if (o != null) {
@@ -94,12 +98,13 @@ public class CsvGenerator {
 		}
 	}
 
-	public static final void generateFromAggregate(String file, List<AggregateHolder> ah) {
+	public static final void generateFromAggregate(String file,
+			List<AggregateHolder> ah) {
 		try {
 			FileWriter fileWriter = new FileWriter(file);
 
 			for (AggregateHolder m : ah) {
-				Method[] getters = NozzleMeasure.class.getDeclaredMethods();
+				Method[] getters = AggregateHolder.class.getDeclaredMethods();
 				for (Method getter : getters) {
 					if (!getter.getName().startsWith("get")) {
 						continue;
@@ -107,7 +112,8 @@ public class CsvGenerator {
 					Object o = null;
 					try {
 						o = getter.invoke(m);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					} catch (IllegalAccessException | IllegalArgumentException
+							| InvocationTargetException e) {
 						e.printStackTrace();
 					}
 					if (o != null) {

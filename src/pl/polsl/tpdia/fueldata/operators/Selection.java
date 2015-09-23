@@ -94,9 +94,9 @@ public class Selection {
 
 				for (Method setter : gettersToCompareWithValue.values()) {
 					Object result = setter.invoke(m);
-					if ((result != null) && (!result.equals(getterValues.get(setter)))) {
+					if ((result != null) && (result.equals(getterValues.get(setter)))) {
 						//remove object that didn't match criteria
-						data.getTankMeasures().remove(m);
+						list.add(m);
 					}
 				}
 
@@ -133,9 +133,9 @@ public class Selection {
 
 				for (Method setter : gettersToCompareWithValue.values()) {
 					Object result = setter.invoke(m);
-					if ((result != null) && (!result.equals(getterValues.get(setter)))) {
+					if ((result != null) && (result.equals(getterValues.get(setter)))) {
 						//remove object that didn't match criteria
-						data.getRefuels().remove(m);
+						list.add(m);
 					}
 				}
 
