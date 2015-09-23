@@ -1,5 +1,7 @@
 package pl.polsl.tpdia.fueldata.analyzer;
 
+import static java.lang.System.out;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pl.polsl.tpdia.fueldata.datasource.ListStreamDataSource;
+import pl.polsl.tpdia.fueldata.datasource.StreamDataSource;
 import pl.polsl.tpdia.fueldata.io.CsvGenerator;
 import pl.polsl.tpdia.fueldata.io.CsvLoader;
 import pl.polsl.tpdia.fueldata.model.AggregateHolder;
@@ -16,8 +20,6 @@ import pl.polsl.tpdia.fueldata.operators.Aggregate;
 import pl.polsl.tpdia.fueldata.operators.Projection;
 import pl.polsl.tpdia.fueldata.operators.Selection;
 
-import static java.lang.System.out;
-
 public class Analyzer {
 
 	public static void main(String[] args) {
@@ -25,6 +27,9 @@ public class Analyzer {
 
 		out.println("Loading data...");
 		DataHolder dh = loadData();
+
+		out.println("Creating stream data source...");
+		StreamDataSource sds = new ListStreamDataSource(dh);
 
 		out.println("Performing selection...");
 		Map<String, Object> tankMap = new HashMap<>();
