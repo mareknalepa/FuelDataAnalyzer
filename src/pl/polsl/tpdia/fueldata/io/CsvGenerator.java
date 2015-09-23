@@ -130,7 +130,11 @@ public class CsvGenerator {
 						e.printStackTrace();
 					}
 					if (o != null) {
-						fileWriter.append("" + o);
+						if (o.getClass().isAssignableFrom(Date.class)) {
+							fileWriter.append("" + ((Date) o).getTime());
+						} else {
+							fileWriter.append("" + o);
+						}
 						fileWriter.append(";");
 					}
 				}
