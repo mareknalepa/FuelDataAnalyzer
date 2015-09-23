@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 
 import pl.polsl.tpdia.fueldata.model.AggregateHolder;
@@ -33,7 +34,11 @@ public class CsvGenerator {
 						e.printStackTrace();
 					}
 					if (o != null) {
-						nozzleFile.append("" + o);
+						if (o.getClass().isAssignableFrom(Date.class)) {
+							nozzleFile.append("" + ((Date) o).getTime());
+						} else {
+							nozzleFile.append("" + o);
+						}
 						nozzleFile.append(";");
 					}
 				}
@@ -58,7 +63,11 @@ public class CsvGenerator {
 						e.printStackTrace();
 					}
 					if (o != null) {
-						tankFile.append("" + o);
+						if (o.getClass().isAssignableFrom(Date.class)) {
+							tankFile.append("" + ((Date) o).getTime());
+						} else {
+							tankFile.append("" + o);
+						}
 						tankFile.append(";");
 					}
 				}
@@ -83,7 +92,11 @@ public class CsvGenerator {
 						e.printStackTrace();
 					}
 					if (o != null) {
-						refuelFile.append("" + o);
+						if (o.getClass().isAssignableFrom(Date.class)) {
+							refuelFile.append("" + ((Date) o).getTime());
+						} else {
+							refuelFile.append("" + o);
+						}
 						refuelFile.append(";");
 					}
 				}

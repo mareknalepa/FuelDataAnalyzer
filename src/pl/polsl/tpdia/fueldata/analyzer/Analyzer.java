@@ -27,14 +27,17 @@ public class Analyzer {
 		DataHolder dh = loadData();
 
 		out.println("Performing selection...");
-		Map<String, Object> map = new HashMap<>();
-		map.put("id", new Long(1));
-		dh = Selection.apply(dh, new HashMap<>(), map, new HashMap<>());
+		Map<String, Object> tankMap = new HashMap<>();
+		tankMap.put("id", new Long(1));
+		Map<String, Object> refuelMap = new HashMap<>();
+		refuelMap.put("tankId", new Long(1));
+		dh = Selection.apply(dh, new HashMap<>(), tankMap, refuelMap);
 
 		out.println("Performing projection...");
-		String[] fields = { "timestamp", "id", "fuelVolume" };
+		String[] tankFields = { "timestamp", "id", "fuelVolume" };
+		String[] refuelFields = { "timestamp", "tankId", "fuelVolume" };
 		dh = Projection.apply(dh, new ArrayList<String>(),
-				Arrays.asList(fields), new ArrayList<String>());
+				Arrays.asList(tankFields), Arrays.asList(refuelFields));
 
 		out.println("Saving results...");
 		CsvGenerator.generate("nozzleResults.log", "tankResults.log",
