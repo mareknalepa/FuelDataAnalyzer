@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,11 +20,9 @@ import pl.polsl.tpdia.fueldata.model.TankMeasure;
 
 public class CsvLoader {
 
-	private final static DateFormat df = new SimpleDateFormat(
-			"YYYY-MM-DD HH:mm:ss");
+	private final static DateFormat df = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
 
-	public static void load(DataHolder dh, String nozzle, String refuel,
-			String tank) {
+	public static void load(DataHolder dh, String nozzle, String refuel, String tank) {
 		List<NozzleMeasure> nozzleMeasures = new ArrayList<>();
 		List<Refuel> refuels = new ArrayList<>();
 		List<TankMeasure> tankMeasures = new ArrayList<>();
@@ -50,28 +49,48 @@ public class CsvLoader {
 	}
 
 	private static List<String[]> readLines(String file, String separator) {
-		List<String[]> lines = new ArrayList<>();
-		BufferedReader br = null;
-		String line = "";
+		System.out.println("Trying to open file '" + file + "'.");
+		FileReader reader = null;
 		try {
-			br = new BufferedReader(new FileReader(file));
-			while ((line = br.readLine()) != null) {
-				String[] parts = line.split(separator);
-				lines.add(parts);
-			}
+			reader = new FileReader(file);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+			System.out.println("File with name '" + file + "' was not found. Using the one from classpath.");
+
+			try {
+				URL resourceURL = CsvLoader.class.getResource("/" + file);
+				System.out.println("Opening resource with name '" + resourceURL.getPath() + "' from classpath.");
+				reader = new FileReader(resourceURL.getPath());
+			} catch (FileNotFoundException ex) {
+				System.out.println(
+						"No file with name '" + file + "' was found on classpath. Program will terminate now.");
+				System.exit(0);
+			}
+		}
+
+		List<String[]> lines = new ArrayList<>();
+
+		if (reader != null) {
+			BufferedReader br = null;
+			String line = "";
+			try {
+				br = new BufferedReader(reader);
+				while ((line = br.readLine()) != null) {
+					String[] parts = line.split(separator);
+					lines.add(parts);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (br != null) {
+					try {
+						br.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
+
 		return lines;
 	}
 

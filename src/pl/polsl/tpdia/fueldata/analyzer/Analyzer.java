@@ -4,7 +4,6 @@ import static java.lang.System.out;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,12 +46,9 @@ public class Analyzer {
 
 		out.println("Configuring output writers...");
 		try {
-			WriterOperator nozzleWriter = new WriterOperator(new FileWriter(
-					"nozzleResults.csv"));
-			WriterOperator refuelWriter = new WriterOperator(new FileWriter(
-					"refuelResults.csv"));
-			WriterOperator tankWriter = new WriterOperator(new FileWriter(
-					"tankResults.csv"));
+			WriterOperator nozzleWriter = new WriterOperator(new FileWriter("nozzleResults.csv"));
+			WriterOperator refuelWriter = new WriterOperator(new FileWriter("refuelResults.csv"));
+			WriterOperator tankWriter = new WriterOperator(new FileWriter("tankResults.csv"));
 			nozzleOperators.add(nozzleWriter);
 			refuelOperators.add(refuelWriter);
 			tankOperators.add(tankWriter);
@@ -66,8 +62,7 @@ public class Analyzer {
 		avgAggregate.setTimeWindow(30);
 		tankOperators.add(avgAggregate);
 		try {
-			tankOperators.add(new WriterOperator(new FileWriter(
-					"avgFuelVolume.csv")));
+			tankOperators.add(new WriterOperator(new FileWriter("avgFuelVolume.csv")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -96,27 +91,9 @@ public class Analyzer {
 	private static DataHolder loadData() {
 		DataHolder dh = new DataHolder();
 
-		String nozzleMeasuresPath;
-		try {
-			nozzleMeasuresPath = Analyzer.class.getClassLoader()
-					.getResource("nozzleMeasures.log").toURI().getPath();
-		} catch (URISyntaxException e) {
-			nozzleMeasuresPath = null;
-		}
-		String refuelsPath;
-		try {
-			refuelsPath = Analyzer.class.getClassLoader()
-					.getResource("refuel.log").toURI().getPath();
-		} catch (URISyntaxException e) {
-			refuelsPath = null;
-		}
-		String tankMeasuresPath;
-		try {
-			tankMeasuresPath = Analyzer.class.getClassLoader()
-					.getResource("tankMeasures.log").toURI().getPath();
-		} catch (URISyntaxException e) {
-			tankMeasuresPath = null;
-		}
+		String nozzleMeasuresPath = "nozzleMeasures.log";
+		String refuelsPath = "refuel.log";
+		String tankMeasuresPath = "tankMeasures.log";
 
 		CsvLoader.load(dh, nozzleMeasuresPath, refuelsPath, tankMeasuresPath);
 		return dh;
